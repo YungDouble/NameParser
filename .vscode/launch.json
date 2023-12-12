@@ -5,7 +5,7 @@
             "name": "C++ Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/a.exe", // Update with your executable name
+            "program": "${workspaceFolder}/output.exe", // Update with your executable name
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
