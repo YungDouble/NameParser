@@ -19,7 +19,7 @@ void CSVProcessor::processCSV(const std::string& inputFileName, const std::strin
     std::getline(inputFile, header);
 
     // Write the new header
-    outputFile << header << ",LastName,FirstName,MiddleName" << std::endl;
+    outputFile << header << ",LastName,FirstName,MiddleName,Alias" << std::endl;
 
     // Process each line in the CSV
     std::string line;
@@ -33,9 +33,10 @@ void CSVProcessor::processCSV(const std::string& inputFileName, const std::strin
         // Parse the name using NameParser
         NameParser nameParser(fullName);
 
-        // Write the original line along with the parsed name components
+        // Write the original line along with the parsed name components and alias
         outputFile << line << "," << nameParser.getLastName() << ","
-                   << nameParser.getFirstName() << "," << nameParser.getMiddleName() << std::endl;
+                   << nameParser.getFirstName() << "," << nameParser.getMiddleName() << ","
+                   << nameParser.getAlias() << std::endl;
     }
 
     // Close files
