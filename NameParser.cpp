@@ -27,7 +27,6 @@ void NameParser::parseFullName(const std::string& fullName) {
     std::string cleanedName = fullName;
     trimSpaces(cleanedName);
     removeSingleDots(cleanedName);
-    // removeDashes(cleanedName);
 
     std::istringstream iss(cleanedName);
     std::vector<std::string> nameParts;
