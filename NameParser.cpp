@@ -1,15 +1,11 @@
-// NameParser.cpp
 #include "NameParser.h"
 #include <sstream>
 #include <vector>
-#include <iostream>
 
-// Constructor
 NameParser::NameParser(const std::string& fullName) {
     parseFullName(fullName);
 }
 
-// Getter functions
 std::string NameParser::getFirstName() const {
     return firstName;
 }
@@ -22,70 +18,64 @@ std::string NameParser::getLastName() const {
     return lastName;
 }
 
-std::string NameParser::getAlias() const {
-    return alias;
+std::string NameParser::getSuffix() const {
+    return suffix;
 }
 
-// Helper function to parse the full name
-// Helper function to parse the full name
 void NameParser::parseFullName(const std::string& fullName) {
-    std::istringstream iss(fullName);
+    // Remove leading and trailing spaces, dots, and dashes
+    std::string cleanedName = fullName;
+    trimSpaces(cleanedName);
+    removeSingleDots(cleanedName);
+    // removeDashes(cleanedName);
+
+    std::istringstream iss(cleanedName);
     std::vector<std::string> nameParts;
     std::string part;
 
-    while (iss >> part) {
+    while (std::getline(iss, part, ' ')) {
+        // Trim leading and trailing spaces from each part
+        trimSpaces(part);
+
         nameParts.push_back(part);
     }
 
     size_t namePartsSize = nameParts.size();
 
-    // Identify and preserve particles in the last name
-    if (namePartsSize > 1) {
-        size_t lastIdx = namePartsSize - 1;
-        if (nameParts[lastIdx] == "De" || nameParts[lastIdx] == "Di" || nameParts[lastIdx] == "La" || nameParts[lastIdx] == "Al") {
-            lastName = nameParts[lastIdx];
-            nameParts.pop_back();
-            --namePartsSize;
-        }
-    }
+    // Extract and set the suffix
+    extractSuffix(cleanedName);
 
-    // Set the last name
+    // Set the last name as the leftmost part
     if (!nameParts.empty()) {
         lastName = nameParts.front();
+        nameParts.erase(nameParts.begin()); // Remove the last name from the vector
+        --namePartsSize;
     }
 
     // Set the first name
-    if (namePartsSize > 1) {
-        firstName = nameParts[1];
+    if (!nameParts.empty()) {
+        firstName = nameParts.front();
+        nameParts.erase(nameParts.begin()); // Remove the first name from the vector
+        --namePartsSize;
     }
 
     // Concatenate the remaining parts as the middle name
     std::ostringstream ossMiddle;
-    for (size_t i = 2; i < namePartsSize - 1; ++i) {
-        if (nameParts[i].back() == '-') {
-            ossMiddle << nameParts[i] << nameParts[i + 1] << ' ';
-            ++i; // Skip the next part
-        } else {
-            ossMiddle << nameParts[i] << ' ';
-        }
+    for (const auto& part : nameParts) {
+        ossMiddle << part << ' ';
     }
-    // Add the last part to the middle name
-    if (namePartsSize > 2) {
-        ossMiddle << nameParts.back();
-    }
+
     middleName = ossMiddle.str();
 
-    // Set the alias
-    alias = extractAlias(fullName);
+    // Remove single dots after letters in the middle name
+    removeSingleDots(middleName);
 
     // Trim spaces
     trimSpaces(firstName);
     trimSpaces(middleName);
     trimSpaces(lastName);
-    trimSpaces(alias);
 }
 
-// Helper function to remove leading and trailing spaces from a string
 void NameParser::trimSpaces(std::string& str) {
     size_t start = str.find_first_not_of(' ');
     size_t end = str.find_last_not_of(' ');
@@ -96,17 +86,27 @@ void NameParser::trimSpaces(std::string& str) {
         str.clear();
     }
 }
+void NameParser::extractSuffix(std::string& fullName) {
+    // Check for common suffix patterns
+    size_t jrPos = fullName.find("Jr");
+    size_t iiPos = fullName.find("II");
+    size_t iiiPos = fullName.find("III");
 
-// Helper function to extract alias from a name part
-std::string NameParser::extractAlias(const std::string& name) {
-    std::string alias;
-
-    // Check for common alias patterns
-    if (name.find("Jr") != std::string::npos || name.find("jr") != std::string::npos ||
-        name.find("Jr.") != std::string::npos || name.find("II") != std::string::npos ||
-        name.find("III") != std::string::npos) {
-        alias = name;
+    if (jrPos != std::string::npos) {
+        suffix = "Jr";
+        fullName.erase(jrPos, 2); // Remove "Jr" from the string
+    } else if (iiPos != std::string::npos) {
+        suffix = "II";
+        fullName.erase(iiPos, 2); // Remove "II" from the string
+    } else if (iiiPos != std::string::npos) {
+        suffix = "III";
+        fullName.erase(iiiPos, 3); // Remove "III" from the string
     }
+}
 
-    return alias;
+void NameParser::removeSingleDots(std::string& str) {
+    size_t dotPos = str.find('.');
+    if (dotPos != std::string::npos && dotPos == str.length() - 1) {
+        str.pop_back();  // Remove the dot
+    }
 }

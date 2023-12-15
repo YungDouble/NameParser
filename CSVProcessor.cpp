@@ -36,7 +36,7 @@ void CSVProcessor::processCSV(const std::string& inputFileName, const std::strin
         // Write the original line along with the parsed name components and alias
         outputFile << line << "," << nameParser.getLastName() << ","
                    << nameParser.getFirstName() << "," << nameParser.getMiddleName() << ","
-                   << nameParser.getAlias() << std::endl;
+                   << nameParser.getSuffix() << std::endl;
     }
 
     // Close files

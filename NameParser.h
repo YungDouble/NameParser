@@ -9,7 +9,7 @@ private:
     std::string firstName;
     std::string middleName;
     std::string lastName;
-    std::string alias;
+    std::string suffix;
 
 public:
     NameParser(const std::string& fullName);
@@ -17,12 +17,13 @@ public:
     std::string getFirstName() const;
     std::string getMiddleName() const;
     std::string getLastName() const;
-    std::string getAlias() const;
+    std::string getSuffix() const;
 
 private:
     void parseFullName(const std::string& fullName);
     static void trimSpaces(std::string& str);
-    static std::string extractAlias(const std::string& name);
+    void extractSuffix(std::string& fullName);
+    void removeSingleDots(std::string& str);
 };
 
 #endif // NAMEPARSER_H
