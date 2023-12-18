@@ -25,13 +25,16 @@ void CSVProcessor::processCSV(const std::string& inputFileName, const std::strin
     std::string line;
     while (std::getline(inputFile, line)) {
         std::istringstream iss(line);
-        std::string fullName;
+        std::string dirtyFullName;
 
         // Extract the Fullname column
-        std::getline(iss, fullName, ',');
+        std::getline(iss, dirtyFullName, ',');
 
-        // Parse the name using NameParser
-        NameParser nameParser(fullName);
+        // Clean up the full name by removing errant commas
+        std::string cleanedFullName = cleanFullName(dirtyFullName);
+
+        // Parse the cleaned name using NameParser
+        NameParser nameParser(cleanedFullName);
 
         // Write the original line along with the parsed name components and alias
         outputFile << line << "," << nameParser.getLastName() << ","
