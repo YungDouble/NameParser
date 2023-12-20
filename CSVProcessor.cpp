@@ -6,21 +6,14 @@
 #include <sstream>
 #include <algorithm>
 
-// Helper function to remove errant commas from the full name
-std::string CSVProcessor::cleanFullName(const std::string& dirtyFullName) {
-    // Replace commas within double quotes with an empty string
+// Helper function to clean full name by removing commas
+std::string cleanFullName(const std::string& dirtyFullName) {
     std::string cleanedFullName = dirtyFullName;
-    size_t pos = cleanedFullName.find('"');
-    while (pos != std::string::npos) {
-        size_t endPos = cleanedFullName.find('"', pos + 1);
-        if (endPos != std::string::npos) {
-            std::replace(cleanedFullName.begin() + pos, cleanedFullName.begin() + endPos, ',', ' ');
-        }
-        pos = cleanedFullName.find('"', endPos + 1);
-    }
 
-    // Remove any remaining commas
-    cleanedFullName.erase(std::remove(cleanedFullName.begin(), cleanedFullName.end(), ','), cleanedFullName.end());
+    // Use std::remove_if with a lambda function
+    cleanedFullName.erase(std::remove_if(cleanedFullName.begin(), cleanedFullName.end(),
+                                         [](char c) { return c == ','; }),
+                          cleanedFullName.end());
 
     return cleanedFullName;
 }
@@ -41,7 +34,6 @@ void CSVProcessor::processCSV(const std::string& inputFileName, const std::strin
     // Write the new header
     outputFile << header << ",LastName,FirstName,MiddleName,Alias" << std::endl;
 
-    // Process each line in the CSV
     // Process each line in the CSV
     std::string line;
     while (std::getline(inputFile, line)) {
