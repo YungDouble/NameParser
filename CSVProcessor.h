@@ -8,7 +8,7 @@
 
 class CSVProcessor {
 public:
-    static void processCSV(const std::string& inputFileName, const std::string& outputFileName);
+    static void processCSV(const std::string& inputFileName, const std::string& outputFileName, int fullNameColumnIndex);
 };
 
 #endif // CSVPARSER_H

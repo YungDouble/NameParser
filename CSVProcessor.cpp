@@ -1,10 +1,9 @@
-// CSVProcessor.cpp
-
 #include "CSVProcessor.h"
 #include "NameParser.h"
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <iostream>
 
 // Helper function to clean full name by removing commas
 std::string cleanFullName(const std::string& dirtyFullName) {
@@ -18,7 +17,7 @@ std::string cleanFullName(const std::string& dirtyFullName) {
     return cleanedFullName;
 }
 
-void CSVProcessor::processCSV(const std::string& inputFileName, const std::string& outputFileName) {
+void CSVProcessor::processCSV(const std::string& inputFileName, const std::string& outputFileName, int fullNameColumnIndex) {
     std::ifstream inputFile(inputFileName);
     std::ofstream outputFile(outputFileName);
 
@@ -40,8 +39,14 @@ void CSVProcessor::processCSV(const std::string& inputFileName, const std::strin
         std::istringstream iss(line);
         std::string dirtyFullName;
 
-        // Extract the Fullname column
-        std::getline(iss, dirtyFullName, ',');
+        // Extract the specified Fullname column
+        for (int i = 0; i < fullNameColumnIndex; ++i) {
+            if (!std::getline(iss, dirtyFullName, ',')) {
+                // Handle the case where the specified column index is out of bounds
+                std::cerr << "Error: Specified column index is out of bounds." << std::endl;
+                return;
+            }
+        }
 
         // Clean up the full name by removing errant commas
         std::string cleanedFullName = cleanFullName(dirtyFullName);

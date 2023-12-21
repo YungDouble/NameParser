@@ -13,7 +13,7 @@ int main() {
     std::string outputFileName = "output.csv";
 
     // Process the CSV file
-    CSVProcessor::processCSV(inputFileName, outputFileName);
+    CSVProcessor::processCSV(inputFileName, outputFileName, 3);
 
     return 0;
 }
