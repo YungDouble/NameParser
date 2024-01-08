@@ -23,6 +23,7 @@ private:
     void parseFullName(const std::string& fullName);
     static void trimSpaces(std::string& str);
     void extractSuffix(std::string& fullName);
+    bool isValidSuffix(const std::string& fullName, size_t pos, size_t legnth);
     void removeSingleDots(std::string& str);
 };
 
