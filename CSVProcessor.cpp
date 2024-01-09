@@ -9,12 +9,31 @@
 std::string cleanFullName(const std::string& dirtyFullName) {
     std::string cleanedFullName = dirtyFullName;
 
+    // To remove instances of " - " with just "-"
+    size_t dashPos = cleanedFullName.find(" - ");
+    while (dashPos != std::string::npos) {
+        cleanedFullName.replace(dashPos, 3, "-");
+        dashPos = cleanedFullName.find(" - ");
+    }
+
     // Use std::remove_if with a lambda function
     cleanedFullName.erase(std::remove_if(cleanedFullName.begin(), cleanedFullName.end(),
-                                         [](char c) { return c == ','; }),
+                                         [](char c) { 
+                                            // adding additional characters to clean up
+                                            return (c == ','|| c == '(' || c == ')' || c == '*');
+                                        }),
                           cleanedFullName.end());
 
     return cleanedFullName;
+}
+
+// Helper function to capitalize the first letter of each string
+std::string capitalizeFirstLetter(const std::string& str) {
+    std::string result = str;
+    if (!result.empty()) {
+        result[0] = std::toupper(result[0]);
+    }
+    return result;
 }
 
 void CSVProcessor::processCSV(const std::string& inputFileName, const std::string& outputFileName, int fullNameColumnIndex) {
@@ -54,10 +73,16 @@ void CSVProcessor::processCSV(const std::string& inputFileName, const std::strin
         // Parse the cleaned name using NameParser
         NameParser nameParser(cleanedFullName);
 
-        // Write the original line along with the parsed name components and alias
-        outputFile << line << "," << nameParser.getLastName() << ","
-                   << nameParser.getFirstName() << "," << nameParser.getMiddleName() << ","
-                   << nameParser.getSuffix() << std::endl;
+        // Capitalize first letter of each component
+        std::string lastName = capitalizeFirstLetter(nameParser.getLastName());
+        std::string firstName = capitalizeFirstLetter(nameParser.getFirstName());
+        std::string middleName = capitalizeFirstLetter(nameParser.getMiddleName());
+        std::string suffix = capitalizeFirstLetter(nameParser.getSuffix());
+
+        // Write the original line along with the parsed name components and suffix
+        outputFile << line << "," << lastName << ","
+                   << firstName << "," << middleName << ","
+                   << suffix << std::endl;
     }
 
     // Close files

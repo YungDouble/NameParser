@@ -73,6 +73,7 @@ void NameParser::parseFullName(const std::string& fullName) {
     // Check for suffix in middle name
     std::string middleNameString = ossMiddle.str();
     extractSuffix(middleNameString);
+    middleName = middleNameString;
 
     // Remove single dots after letters in the middle name
     removeSingleDots(middleName);
@@ -102,6 +103,7 @@ void NameParser::extractSuffix(std::string& fullName) {
     size_t jrPos = fullName.find("jr");
     size_t iiPos = fullName.find("ii");
     size_t iiiPos = fullName.find("iii");
+    size_t ivPos = fullName.find("iv");
 
     if (isValidSuffix(fullName, jrPos, 2)) {
         suffix = "Jr";
@@ -112,6 +114,8 @@ void NameParser::extractSuffix(std::string& fullName) {
     } else if (isValidSuffix(fullName, iiiPos, 3)) {
         suffix = "III";
         fullName.erase(iiiPos, 3); // Remove "III" from the string
+    } else if (isValidSuffix(fullName, ivPos, 2)) {
+        suffix = "IV";
     }
 }
 
